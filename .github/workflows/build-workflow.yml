@@ -58,7 +58,7 @@ jobs:
           echo ${{ steps.GetCodeQualityResult.outputs.response }}
           echo ${{ fromJson(steps.GetCodeQualityResult.outputs.response).projectStatus.status }}          
       - name: Validate Code Quality Status
-        if: ${{ fromJson(steps.CodeQualityResult.outputs.response).projectStatus.status }} == 'ERROR'
+        if: ${{ fromJson(steps.GetCodeQualityResult.outputs.response).projectStatus.status }} == 'ERROR'
         run: |
           echo "Sonar code quality check failed. Please see the sonar cloud report for more details"
           exit 1          
