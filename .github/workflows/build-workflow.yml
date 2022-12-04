@@ -4,7 +4,7 @@ on:
   # a pull request.
   push:
     branches:
-      - gradle
+      - master
   pull_request:
     branches: 
       - master
