@@ -45,3 +45,20 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # SonarCloud access token should be generated from https://sonarcloud.io/account/security/
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: Get Code Quality Result
+        id: GetCodeQualityResult
+        uses: fjogeleit/http-request-action@v1
+        with:
+          url: ' https://sonarcloud.io/api/qualitygates/project_status?projectKey=prakashvra_sonarcloud-github-action-samples&organization=prakashvra&branch=master'
+          method: 'GET'
+          username: ${{ secrets.SONAR_TOKEN }}
+          customHeaders: '{"Content-Type": "application/json"}'
+      - name: Show Response
+        run: |
+          echo ${{ steps.GetCodeQualityResult.outputs.response }}
+          echo ${{ fromJson(steps.GetCodeQualityResult.outputs.response).projectStatus.status }}          
+      - name: Validate Code Quality Status
+        if: ${{ fromJson(steps.CodeQualityResult.outputs.response).projectStatus.status }} == 'ERROR'
+        run: |
+          echo "Sonar code quality check failed. Please see the sonar cloud report for more details"
+          exit 1          
